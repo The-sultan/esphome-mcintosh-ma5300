@@ -25,11 +25,10 @@ INPUT_MAP = {
 }
 
 BRIGHTNESS_MAP = {
-    "Off":    0,
-    "Low":    1,
-    "Medium": 2,
-    "High":   3,
-    "Full":   4,
+    "25%":  1,
+    "50%":  2,
+    "75%":  3,
+    "100%": 4,
 }
 
 # (cmd_prefix, option_map, hub_setter)
