@@ -2,6 +2,7 @@
 
 #include "esphome/components/select/select.h"
 
+#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -16,6 +17,7 @@ class McIntoshSelect : public select::Select {
   void set_hub(McIntoshMA5300 *hub) { hub_ = hub; }
   void set_command_prefix(const std::string &prefix) { cmd_prefix_ = prefix; }
   void add_option(const std::string &name, int index) { options_.emplace_back(name, index); }
+  void set_label_override(int index, const std::string &label) { label_overrides_[index] = label; }
 
   // Called by the hub after input discovery completes.
   void set_discovered_options(const std::vector<std::pair<std::string, int>> &options);
@@ -29,6 +31,7 @@ class McIntoshSelect : public select::Select {
   McIntoshMA5300 *hub_{nullptr};
   std::string cmd_prefix_{"INP"};
   std::vector<std::pair<std::string, int>> options_;
+  std::map<int, std::string> label_overrides_;
 };
 
 }  // namespace mcintosh_ma5300

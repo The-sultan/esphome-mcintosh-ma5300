@@ -31,8 +31,12 @@ bool McIntoshSelect::publish_by_index(int index) {
 }
 
 void McIntoshSelect::set_discovered_options(const std::vector<std::pair<std::string, int>> &options) {
-  options_ = options;
-  // Build a FixedVector<const char*> from the persistent strings in options_.
+  options_.clear();
+  for (const auto &opt : options) {
+    auto it = label_overrides_.find(opt.second);
+    std::string name = (it != label_overrides_.end()) ? it->second : opt.first;
+    options_.emplace_back(name, opt.second);
+  }
   FixedVector<const char *> names;
   names.init(options_.size());
   for (const auto &opt : options_)

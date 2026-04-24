@@ -8,6 +8,8 @@ DEPENDENCIES = ["mcintosh_ma5300"]
 
 McIntoshSelect = mcintosh_ma5300_ns.class_("McIntoshSelect", select.Select)
 
+CONF_INPUT_LABELS = "input_labels"
+
 INPUT_MAP = {
     "BAL":      1,
     "UNBAL 1":  2,
@@ -41,6 +43,11 @@ CONFIG_SCHEMA = select.select_schema(McIntoshSelect).extend(
     {
         cv.GenerateID(CONF_MCINTOSH_MA5300_ID): cv.use_id(McIntoshMA5300),
         cv.Required(CONF_TYPE): cv.one_of(*TYPES, lower=True),
+        # Optional custom labels for input type: map input index (1-13) to display name.
+        # Unlabelled inputs fall back to their protocol name (e.g. "COAX 1").
+        cv.Optional(CONF_INPUT_LABELS): cv.Schema(
+            {cv.int_range(min=1, max=13): cv.string}
+        ),
     }
 )
 
@@ -49,9 +56,17 @@ async def to_code(config):
     hub = await cg.get_variable(config[CONF_MCINTOSH_MA5300_ID])
     type_key = config[CONF_TYPE]
     cmd_prefix, option_map, setter = TYPES[type_key]
-    var = await select.new_select(config, options=list(option_map.keys()))
+
+    input_labels = config.get(CONF_INPUT_LABELS, {})
+    effective_map = {
+        input_labels.get(idx, name): idx for name, idx in option_map.items()
+    }
+
+    var = await select.new_select(config, options=list(effective_map.keys()))
     cg.add(var.set_hub(hub))
     cg.add(var.set_command_prefix(cmd_prefix))
-    for name, idx in option_map.items():
-        cg.add(var.add_option(name, idx))
+    for display_name, idx in effective_map.items():
+        cg.add(var.add_option(display_name, idx))
+    for idx, label in input_labels.items():
+        cg.add(var.set_label_override(idx, label))
     cg.add(getattr(hub, setter)(var))

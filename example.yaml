@@ -74,6 +74,16 @@ select:
     mcintosh_ma5300_id: mc
     type: input
     name: "Input"
+    # input_labels: (optional) Map input index numbers to custom display names.
+    # These labels appear in Home Assistant instead of the default protocol names
+    # (BAL, UNBAL 1, COAX 1, etc.), matching what you see on the amp's display.
+    # Only define the inputs you want to rename — unlabelled ones keep their default name.
+    # Input index reference: 1=BAL, 2-5=UNBAL 1-4, 6=MM PHONO, 7=COAX 1,
+    #   8=COAX 2, 9=OPTI 1, 10=OPTI 2, 11=USB, 12=MCT, 13=HDMI
+    # input_labels:
+    #   6: "TurnTable"  # MM PHONO
+    #   7: "Streamer"   # COAX 1
+    #   9: "TV"         # OPTI 1
   - platform: mcintosh_ma5300
     mcintosh_ma5300_id: mc
     type: display_brightness
