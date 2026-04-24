@@ -12,6 +12,7 @@ esp32:
 external_components:
   - source: github://The-sultan/esphome-mcintosh-ma5300
     components: [mcintosh_ma5300]
+    refresh: 0s
 
 # Enable logging
 logger:
