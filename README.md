@@ -95,7 +95,23 @@ See [`example.yaml`](example.yaml) for the full configuration with all entities.
 
 ## Input Discovery
 
-The MA5300 only activates the inputs that are physically connected. The **Discover Inputs** button cycles through all inputs and builds a filtered list, which is persisted to flash. After discovery the device reboots once so Home Assistant receives the filtered input list on reconnect.
+The MA5300 lets the user disable unused inputs in its configuration menu, so the front-panel knob only cycles through the active ones. The **Discover Inputs** button enumerates those active inputs by cycling INP+ until it returns to the starting input, then persists the filtered list to flash. After discovery the device reboots once so Home Assistant receives the filtered input list on reconnect.
+
+Since the RS-232 protocol does not expose user-defined input labels, the component supports mapping the default protocol names to custom names via YAML, so the HA Input select matches what is shown on the amp's display:
+
+```yaml
+select:
+  - platform: mcintosh_ma5300
+    mcintosh_ma5300_id: mc
+    type: input
+    name: "Input"
+    input_labels:
+      6: "TurnTable"  # MM PHONO
+      7: "Streamer"   # COAX 1
+      9: "TV"         # OPTI 1
+```
+
+Input index reference: `1`=BAL, `2–5`=UNBAL 1–4, `6`=MM PHONO, `7`=COAX 1, `8`=COAX 2, `9`=OPTI 1, `10`=OPTI 2, `11`=USB, `12`=MCT, `13`=HDMI
 
 To reset the input list back to all 13 inputs, erase the device flash:
 
@@ -127,7 +143,7 @@ The media player slider is limited to **50% of the amp's range** (VOL 0–50) by
 | `TTT` | Treble (−12 to +12 dB) |
 | `TBA` | Balance (−50 to +50) |
 | `TIN` | Input trim (−6.0 to +6.0 dB, 0.5 dB steps) |
-| `TDB` | Display brightness (0–4) |
+| `TDB` | Display brightness (1–4) |
 | `HPS` | Headphones connected/disconnected |
 | `QRY` | Query full state |
 | `STA` | Enable automatic status notifications |
